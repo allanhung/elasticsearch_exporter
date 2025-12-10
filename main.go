@@ -230,6 +230,12 @@ func main() {
 				logger.Error("failed to register shards collector in cluster info")
 				os.Exit(1)
 			}
+			iHC := collector.NewIndicesHealth(logger, httpClient, esURL)
+			prometheus.MustRegister(iHC)
+			if registerErr := clusterInfoRetriever.RegisterConsumer(iHC); registerErr != nil {
+				logger.Error("failed to register indices health collector in cluster info")
+				os.Exit(1)
+			}
 		}
 
 		if *esExportIndicesSettings {
